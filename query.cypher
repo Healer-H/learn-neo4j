@@ -15,7 +15,7 @@ tagline:'Everything begins with a (her)o.'}) RETURN a
 // DELETE
 MATCH (a:Person {name:'Huỳnh Minh Hiếu'}) DELETE a
 
-MATCH (a:Movie {title:'Captain Marvel'}) DETACH DELETE a
+MATCH (a:Movie {title:'Parasite'}) DETACH DELETE a
 
 // MERGE
 MERGE (a:Person {name:'Huỳnh Minh Hiếu'})
