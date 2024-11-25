@@ -59,3 +59,48 @@ RETURN cocoActors.name AS Recommended, count(*) AS Strength ORDER BY Strength DE
 MATCH (a:Person {name:'Tom Hanks'})-[:ACTED_IN]->(m)<-[:ACTED_IN]-(coActors),
 (coActors)-[:ACTED_IN]->(m2)<-[:ACTED_IN]-(other:Person {name:'Tom Cruise'})
 RETURN a, m, coActors, m2, other
+
+//FUNCTION
+
+// Aggregating Functions
+MATCH (p:Person)
+RETURN count(p.MSSV)
+
+MATCH (p:Person)
+RETURN max(p.age)
+
+MATCH (p:Person)
+RETURN min(p.age)
+
+MATCH (p:Person)
+RETURN sum(p.age)
+
+// SUBQUERY
+
+MATCH (m:Movie)
+CALL {
+  WITH m
+  MATCH (p:Person)-[:WROTE]->(m)
+  RETURN collect(p) AS actors
+}
+RETURN m AS movie, actors
+
+// TRIGGER
+
+CALL apoc.trigger.add(
+  'logKnowsRelationship', 
+  'UNWIND $createdRelationships AS rel 
+   MATCH (a)-[rel:KNOWS]->(b) 
+   CREATE (log:Log {message: a.name + " biết " + b.name, timestamp: timestamp()})', 
+  {phase: 'after'}
+)
+
+// INDEXS
+
+CREATE INDEX person_name FOR (p:Person) ON (p.name)
+
+PROFILE MATCH (p:Person {name: "Cô Thủy"}) RETURN p
+
+CREATE FULLTEXT INDEX person_fulltext_index
+FOR (p:Person) ON EACH [p.name]
+
